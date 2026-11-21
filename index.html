@@ -51,6 +51,9 @@
       });
 
       var list = document.getElementById("links");
+      if (!c.links || c.links.length === 0) {
+        list.closest("section").hidden = true;
+      }
       (c.links || []).forEach(function (link) {
         var li = document.createElement("li");
         var a = document.createElement("a");
