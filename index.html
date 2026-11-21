@@ -3,71 +3,159 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>소개</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <title>고수경 — 정보보안 담당자의 AI 배우기 기록</title>
+  <meta name="description" content="정보보안 업무를 하며 AI를 일에 잘 쓰는 법을 배우고 있는 고수경의 소개 페이지예요.">
+
+  <!-- 링크 공유 미리보기 (카톡·슬랙 등) -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://test-two-sigma-78.vercel.app/">
+  <meta property="og:title" content="고수경 — 정보보안 담당자의 AI 배우기 기록">
+  <meta property="og:description" content="정보보안 업무를 하며 AI를 일에 잘 쓰는 법을 배우고 있는 고수경의 소개 페이지예요.">
+  <meta property="og:image" content="https://test-two-sigma-78.vercel.app/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="page">
-    <header class="hero">
+  <header class="hero">
+    <div class="wrap">
+      <div id="avatar" class="avatar" aria-hidden="true"></div>
       <h1 id="name"></h1>
       <p id="tagline" class="tagline"></p>
-    </header>
+      <ul id="keywords" class="keywords"></ul>
+    </div>
+  </header>
 
-    <section class="story">
-      <h2 id="storyTitle"></h2>
-      <div id="story"></div>
+  <main>
+    <section class="section" data-section="about">
+      <div class="wrap">
+        <p class="eyebrow"><span class="num"></span> · ABOUT</p>
+        <div id="story"></div>
+      </div>
     </section>
 
-    <section class="links">
-      <h2 id="linksTitle"></h2>
-      <ul id="links"></ul>
+    <section class="section" data-section="now">
+      <div class="wrap">
+        <p class="eyebrow"><span class="num"></span> · NOW</p>
+        <div id="now" class="now"></div>
+        <p id="nowUpdated" class="updated"></p>
+      </div>
     </section>
 
-    <footer id="footer" class="footer"></footer>
+    <section class="section" data-section="channels">
+      <div class="wrap">
+        <p class="eyebrow"><span class="num"></span> · CHANNELS</p>
+        <ul id="channels" class="channels"></ul>
+      </div>
+    </section>
+
+    <section class="section contact" data-section="contact">
+      <div class="wrap">
+        <p class="eyebrow"><span class="num"></span> · CONTACT</p>
+        <p id="contactLead" class="contact-lead"></p>
+        <a id="contactBtn" class="btn" target="_blank" rel="noopener noreferrer"></a>
+        <p id="contactPending" class="contact-pending"></p>
+      </div>
+    </section>
   </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <a id="footerLink" target="_blank" rel="noopener noreferrer"></a>
+    </div>
+  </footer>
 
   <script src="content.js"></script>
   <script>
     (function () {
       var c = window.SITE_CONTENT || {};
-      function setText(id, text) {
-        var el = document.getElementById(id);
-        if (el) el.textContent = text || "";
+      function $(id) { return document.getElementById(id); }
+      function el(tag, cls, text) {
+        var e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (text) e.textContent = text;
+        return e;
       }
 
-      document.title = c.pageTitle || c.name || "소개";
-      setText("name", c.name);
-      setText("tagline", c.tagline);
-      setText("storyTitle", c.storyTitle);
-      setText("linksTitle", c.linksTitle);
-      setText("footer", c.footer);
+      if (c.pageTitle) document.title = c.pageTitle;
 
-      var story = document.getElementById("story");
-      (c.story || []).forEach(function (para) {
-        var p = document.createElement("p");
-        p.textContent = para;
-        story.appendChild(p);
+      // 첫 화면
+      var avatar = $("avatar");
+      if (c.photo) {
+        var img = el("img");
+        img.src = c.photo;
+        img.alt = c.name || "";
+        avatar.appendChild(img);
+        avatar.removeAttribute("aria-hidden");
+      } else {
+        avatar.textContent = c.initial || (c.name || "").charAt(0);
+      }
+      $("name").textContent = c.name || "";
+
+      var tagline = $("tagline"), t = c.tagline || "", h = c.highlight;
+      var at = h ? t.indexOf(h) : -1;
+      if (at >= 0) {
+        tagline.appendChild(document.createTextNode(t.slice(0, at)));
+        tagline.appendChild(el("em", "", h));
+        tagline.appendChild(document.createTextNode(t.slice(at + h.length)));
+      } else {
+        tagline.textContent = t;
+      }
+
+      (c.keywords || []).forEach(function (k) { $("keywords").appendChild(el("li", "", k)); });
+
+      // 01 · ABOUT
+      (c.story || []).forEach(function (s) {
+        var block = el("article", "story-block");
+        if (s.title) block.appendChild(el("h2", "", s.title));
+        block.appendChild(el("p", "", s.text));
+        $("story").appendChild(block);
       });
 
-      var list = document.getElementById("links");
-      if (!c.links || c.links.length === 0) {
-        list.closest("section").hidden = true;
-      }
-      (c.links || []).forEach(function (link) {
-        var li = document.createElement("li");
-        var a = document.createElement("a");
-        a.href = link.url;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        a.textContent = link.label;
-        var arrow = document.createElement("span");
-        arrow.className = "arrow";
-        arrow.setAttribute("aria-hidden", "true");
-        arrow.textContent = "→";
-        a.appendChild(arrow);
+      // NOW
+      (c.now || []).forEach(function (line) { $("now").appendChild(el("p", "", line)); });
+      if (c.nowUpdated) $("nowUpdated").textContent = "업데이트: " + c.nowUpdated;
+
+      // CHANNELS
+      (c.channels || []).forEach(function (ch) {
+        var li = el("li"), a = el("a");
+        a.href = ch.url; a.target = "_blank"; a.rel = "noopener noreferrer";
+        var text = el("span", "ch-text");
+        text.appendChild(el("strong", "", ch.label));
+        if (ch.desc) text.appendChild(el("span", "ch-desc", ch.desc));
+        a.appendChild(text);
+        a.appendChild(el("span", "arrow", "→"));
         li.appendChild(a);
-        list.appendChild(li);
+        $("channels").appendChild(li);
+      });
+
+      // CONTACT
+      $("contactLead").textContent = c.contactLead || "";
+      var btn = $("contactBtn");
+      if (c.contactUrl) {
+        btn.href = c.contactUrl;
+        btn.textContent = (c.contactLabel || "연락하기") + " →";
+        $("contactPending").hidden = true;
+      } else {
+        btn.hidden = true;
+        $("contactPending").textContent = c.contactPending || "";
+      }
+
+      // 맨 아래
+      var f = $("footerLink");
+      f.href = c.footerUrl || "#";
+      f.textContent = (c.footerText || "") + " →";
+
+      // 빈 구역 숨기고 번호 다시 매기기
+      var hide = { channels: !(c.channels && c.channels.length), now: !(c.now && c.now.length) };
+      var n = 0;
+      document.querySelectorAll("[data-section]").forEach(function (sec) {
+        if (hide[sec.dataset.section]) { sec.hidden = true; return; }
+        n += 1;
+        sec.querySelector(".num").textContent = (n < 10 ? "0" : "") + n;
       });
     })();
   </script>
