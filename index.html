@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>소개</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <h1 id="name"></h1>
+      <p id="tagline" class="tagline"></p>
+    </header>
+
+    <section class="story">
+      <h2 id="storyTitle"></h2>
+      <div id="story"></div>
+    </section>
+
+    <section class="links">
+      <h2 id="linksTitle"></h2>
+      <ul id="links"></ul>
+    </section>
+
+    <footer id="footer" class="footer"></footer>
+  </main>
+
+  <script src="content.js"></script>
+  <script>
+    (function () {
+      var c = window.SITE_CONTENT || {};
+      function setText(id, text) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = text || "";
+      }
+
+      document.title = c.pageTitle || c.name || "소개";
+      setText("name", c.name);
+      setText("tagline", c.tagline);
+      setText("storyTitle", c.storyTitle);
+      setText("linksTitle", c.linksTitle);
+      setText("footer", c.footer);
+
+      var story = document.getElementById("story");
+      (c.story || []).forEach(function (para) {
+        var p = document.createElement("p");
+        p.textContent = para;
+        story.appendChild(p);
+      });
+
+      var list = document.getElementById("links");
+      (c.links || []).forEach(function (link) {
+        var li = document.createElement("li");
+        var a = document.createElement("a");
+        a.href = link.url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = link.label;
+        var arrow = document.createElement("span");
+        arrow.className = "arrow";
+        arrow.setAttribute("aria-hidden", "true");
+        arrow.textContent = "→";
+        a.appendChild(arrow);
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+    })();
+  </script>
+</body>
+</html>
